@@ -18,7 +18,6 @@ public class CrossroadController : MonoBehaviour
     AddShapeTo<Crossroad>(side);
   }
 
-
   private bool IsPositionOccupied(Vector2 position)
   {
     // Проверяем, занята ли позиция
@@ -39,7 +38,22 @@ public class CrossroadController : MonoBehaviour
         }
       }
     }
+    // Если позиция свободна, занимаем ее
+    OccupyPosition(position, shapeSize);
     return true;
+  }
+
+  private void OccupyPosition(Vector2 position, Vector2 shapeSize)
+  {
+    // Занимаем позиции для всей формы
+    for (int x = 0; x < shapeSize.x; x++)
+    {
+      for (int y = 0; y < shapeSize.y; y++)
+      {
+        Vector2 posToOccupy = position + new Vector2(x, y);
+        _occupiedPositions.Add(posToOccupy);
+      }
+    }
   }
 
   private void AddShapeTo<TShape>(Side side) where TShape : IShape, new()

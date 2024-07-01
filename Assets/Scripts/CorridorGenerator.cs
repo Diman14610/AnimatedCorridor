@@ -16,9 +16,11 @@ public class CorridorGenerator : MonoBehaviour
     _controller = gameObject.AddComponent<CrossroadController>();
   }
 
-  public IEnumerator StartGeneration(int size)
+  public IEnumerator StartGeneration(int size, float delay)
   {
     Debug.Log(size);
+    Debug.Log(delay);
+    _delay = delay;
     yield return StartCoroutine(Generate(size));
   }
 

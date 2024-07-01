@@ -30,14 +30,14 @@ public class CorridorGenerator : MonoBehaviour
   {
     for (int i = 0; i < numberOfGenerations; i++)
     {
-      var side = GetRandomSide();
-      _controller.AddCrossroadTo(side);
+      // var side = GetRandomSide();
+      _controller.AddCrossroadTo(GetRandomSide());
       yield return new WaitForSeconds(_delay);
 
       int corridorsCount = _random.Next(_minNumberOfCorridors, _maxNumberOfCorridors);
       for (int j = 0; j < corridorsCount; j++)
       {
-        _controller.AddCorridorTo(side);
+        _controller.AddCorridorTo(GetRandomSide());
         yield return new WaitForSeconds(_delay);
       }
     }

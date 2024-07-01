@@ -53,7 +53,7 @@ public class CrossroadController : MonoBehaviour
       return;
     }
 
-    _occupiedPositions.Add(bounds.center);
+    // _occupiedPositions.Add(bounds.center);
     _storage.Add(shapeBase);
   }
 

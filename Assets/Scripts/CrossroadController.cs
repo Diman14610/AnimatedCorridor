@@ -66,8 +66,7 @@ public class CrossroadController : MonoBehaviour
     var target = GameObject.Find(lastShape.Name);
     var newPosition = CalculateNewPosition(target.transform.position, side);
 
-    // Предположим, что размеры коридора и перекрестка - это 1x1 и 2x2 соответственно
-    Vector2 shapeSize = typeof(TShape) == typeof(Corridor) ? new Vector2(1, 1) : new Vector2(2, 2);
+    Vector2 shapeSize = typeof(TShape) == typeof(Corridor) ? new Vector2(1.5f, 0.5f) : new Vector2(1, 1);
 
     if (!CanPlaceShape(newPosition, side, shapeSize))
     {

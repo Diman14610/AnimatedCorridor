@@ -1,11 +1,12 @@
 using UnityEngine;
 using System;
-using System.Threading;
-using System.Collections.Generic;
 using System.Collections;
 
 public class CorridorGenerator : MonoBehaviour
 {
+  private int _minNumberOfCorridors = 1;
+  private int _maxNumberOfCorridors = 6;
+
   private float _delay = 0.09f;
   private Array sides = Enum.GetValues(typeof(Side));
   private CrossroadController _controller;
@@ -16,27 +17,27 @@ public class CorridorGenerator : MonoBehaviour
     _controller = gameObject.AddComponent<CrossroadController>();
   }
 
-  public IEnumerator StartGeneration(int size, float delay)
+  public IEnumerator StartGeneration(int numberOfGenerations, float delay, int minNumberOfCorridors, int maxNumberOfCorridors)
   {
-    Debug.Log(size);
-    Debug.Log(delay);
+    Debug.Log($"numberOfGenerations: {numberOfGenerations}, delay: {delay}, minNumberOfCorridors: {minNumberOfCorridors}, maxNumberOfCorridors: {maxNumberOfCorridors}.");
     _delay = delay;
-    yield return StartCoroutine(Generate(size));
+    _minNumberOfCorridors = minNumberOfCorridors;
+    _maxNumberOfCorridors = maxNumberOfCorridors + 1;
+    yield return StartCoroutine(Generate(numberOfGenerations));
   }
 
   private IEnumerator Generate(int numberOfGenerations)
   {
     for (int i = 0; i < numberOfGenerations; i++)
     {
-      // Добавляем перекрёсток
-      _controller.AddCrossroadTo(GetRandomSide());
+      var side = GetRandomSide();
+      _controller.AddCrossroadTo(side);
       yield return new WaitForSeconds(_delay);
 
-      // Рандомное количество коридоров от 1 до 5
-      int corridorsCount = _random.Next(1, 6);
+      int corridorsCount = _random.Next(_minNumberOfCorridors, _maxNumberOfCorridors);
       for (int j = 0; j < corridorsCount; j++)
       {
-        _controller.AddCorridorTo(GetRandomSide());
+        _controller.AddCorridorTo(side);
         yield return new WaitForSeconds(_delay);
       }
     }

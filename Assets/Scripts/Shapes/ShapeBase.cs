@@ -65,15 +65,19 @@ public abstract class ShapeBase
         break;
 
       case Side.Top:
-        // Вместо y берётся x, т.к. идёт поворот ( Shape.transform.position = new Vector3(target.transform.position.x, roomBounds.min.y - SpriteRenderer.bounds.size.y / 2, target.transform.position.z);)
-        Shape.transform.position = new Vector3(target.transform.position.x, roomBounds.max.y + SpriteRenderer.bounds.size.x / 2, target.transform.position.z);
-        Shape.transform.Rotate(0, 0, 90);
+        Shape.transform.position = new Vector3(target.transform.position.x, roomBounds.max.y + SpriteRenderer.bounds.size.y / 2, target.transform.position.z);
+
+        // Вместо y берётся x, т.к. идёт поворот ( Shape.transform.position = new Vector3(target.transform.position.x, roomBounds.max.y + SpriteRenderer.bounds.size.y / 2, target.transform.position.z);)
+        // Shape.transform.position = new Vector3(target.transform.position.x, roomBounds.max.y + SpriteRenderer.bounds.size.x / 2, target.transform.position.z);
+        // Shape.transform.Rotate(0, 0, 90);
         break;
 
       case Side.Bottom:
+        Shape.transform.position = new Vector3(target.transform.position.x, roomBounds.min.y - SpriteRenderer.bounds.size.y / 2, target.transform.position.z);
+
         // Вместо y берётся x, т.к. идёт поворот ( Shape.transform.position = new Vector3(target.transform.position.x, roomBounds.min.y - SpriteRenderer.bounds.size.y / 2, target.transform.position.z);)
-        Shape.transform.position = new Vector3(target.transform.position.x, roomBounds.min.y - SpriteRenderer.bounds.size.x / 2, target.transform.position.z);
-        Shape.transform.Rotate(0, 0, 90);
+        // Shape.transform.position = new Vector3(target.transform.position.x, roomBounds.min.y - SpriteRenderer.bounds.size.x / 2, target.transform.position.z);
+        // Shape.transform.Rotate(0, 0, 90);
         break;
     }
   }

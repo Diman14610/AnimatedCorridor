@@ -204,7 +204,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &927047924
 GameObject:
@@ -236,8 +236,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f0b63d5a27b9bb4abc52eadfd223aa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Size: 20
+  NumberOfGenerations: 50
   Delay: 0.03
+  MinNumberOfCorridors: 1
+  MaxNumberOfCorridors: 5
 --- !u!212 &927047926
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -301,5 +303,5 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

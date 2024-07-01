@@ -6,7 +6,7 @@ public class CrossroadController : MonoBehaviour
 {
   private bool _init;
   private List<ShapeBase> _storage = new List<ShapeBase>();
-  private HashSet<Vector2> _occupiedPositions = new HashSet<Vector2>();
+  private HashSet<Vector3> _occupiedPositions = new HashSet<Vector3>();
 
   public void AddCorridorTo(Side side)
   {
@@ -18,89 +18,50 @@ public class CrossroadController : MonoBehaviour
     AddShapeTo<Crossroad>(side);
   }
 
-  private bool IsPositionOccupied(Vector2 position)
-  {
-    // Проверяем, занята ли позиция
-    return _occupiedPositions.Contains(position);
-  }
-
-  private bool CanPlaceShape(Vector2 position, Side side, Vector2 shapeSize)
-  {
-    // Проверяем, можно ли разместить форму в данной позиции с учетом размера формы
-    for (int x = 0; x < shapeSize.x; x++)
-    {
-      for (int y = 0; y < shapeSize.y; y++)
-      {
-        Vector2 posToCheck = position + new Vector2(x, y);
-        if (IsPositionOccupied(posToCheck))
-        {
-          return false;
-        }
-      }
-    }
-    // Если позиция свободна, занимаем ее
-    OccupyPosition(position, shapeSize);
-    return true;
-  }
-
-  private void OccupyPosition(Vector2 position, Vector2 shapeSize)
-  {
-    // Занимаем позиции для всей формы
-    for (int x = 0; x < shapeSize.x; x++)
-    {
-      for (int y = 0; y < shapeSize.y; y++)
-      {
-        Vector2 posToOccupy = position + new Vector2(x, y);
-        _occupiedPositions.Add(posToOccupy);
-      }
-    }
-  }
-
   private void AddShapeTo<TShape>(Side side) where TShape : IShape, new()
   {
-    Init(side);
-
     var shape = new TShape();
-    var corridor = shape.Create();
-    var lastShape = _storage[_storage.Count - 1];
-    var target = GameObject.Find(lastShape.Name);
-    var newPosition = CalculateNewPosition(target.transform.position, side);
+    var shapeBase = shape.Create();
 
-    Vector2 shapeSize = typeof(TShape) == typeof(Corridor) ? new Vector2(1.5f, 0.5f) : new Vector2(1, 1);
-
-    if (!CanPlaceShape(newPosition, side, shapeSize))
+    if (!_init)
     {
-      Debug.Log("Невозможно добавить элемент: пространство уже занято.");
+      var room = GameObject.Find("Room");
+      Bounds bounds_room = room.GetComponent<Renderer>().bounds;
+      shapeBase.CreateShape(room, side);
+
+      var innerShapeObject = GameObject.Find(shapeBase.Name);
+      Bounds shapeBounds = innerShapeObject.GetComponent<Renderer>().bounds;
+
+      _occupiedPositions.Add(shapeBounds.center);
+      _storage.Add(shapeBase);
+      _init = true;
+      Destroy(room);
       return;
     }
 
-    corridor.CreateShape(target, side);
-    _storage.Add(corridor);
-    _occupiedPositions.Add(newPosition);
-  }
+    var lastShape = _storage[_storage.Count - 1];
+    var target = GameObject.Find(lastShape.Name);
 
-  private Vector2 CalculateNewPosition(Vector2 currentPosition, Side side)
-  {
-    switch (side)
+    shapeBase.CreateShape(target, side);
+    var shapeObject = GameObject.Find(shapeBase.Name);
+
+    Bounds bounds = shapeObject.GetComponent<Renderer>().bounds;
+
+    if (_occupiedPositions.Contains(bounds.center))
     {
-      case Side.Left:
-        return currentPosition + new Vector2(-1, 0);
-      case Side.Right:
-        return currentPosition + new Vector2(1, 0);
-      case Side.Top:
-        return currentPosition + new Vector2(0, 1);
-      case Side.Bottom:
-        return currentPosition + new Vector2(0, -1);
-      default:
-        throw new ArgumentOutOfRangeException(nameof(side), side, null);
+      Destroy(shapeObject);
+      return;
     }
+
+    _occupiedPositions.Add(bounds.center);
+    _storage.Add(shapeBase);
   }
 
-  private void Init(Side side)
+  private bool Init(Side side)
   {
     if (_init)
     {
-      return;
+      return false;
     }
 
     GameObject room = GameObject.Find("Room");
@@ -111,10 +72,14 @@ public class CrossroadController : MonoBehaviour
       var corridor = new Corridor().Create();
       Enum.TryParse<Side>(item.ToString(), out var newSide);
       corridor.CreateShape(room, newSide);
+      var z = GameObject.Find(corridor.Name);
+      Bounds bounds = z.GetComponent<Renderer>().bounds;
+      _occupiedPositions.Add(bounds.center);
       _storage.Add(corridor);
-      _occupiedPositions.Add(room.transform.position);
     }
 
     _init = true;
+
+    return true;
   }
 }

@@ -28,16 +28,15 @@ public class CorridorGenerator : MonoBehaviour
   {
     for (int i = 0; i < numberOfGenerations; i++)
     {
-      var side = GetRandomSide();
       // Добавляем перекрёсток
-      _controller.AddCrossroadTo(side);
+      _controller.AddCrossroadTo(GetRandomSide());
       yield return new WaitForSeconds(_delay);
 
       // Рандомное количество коридоров от 1 до 5
       int corridorsCount = _random.Next(1, 6);
       for (int j = 0; j < corridorsCount; j++)
       {
-        _controller.AddCorridorTo(side);
+        _controller.AddCorridorTo(GetRandomSide());
         yield return new WaitForSeconds(_delay);
       }
     }
